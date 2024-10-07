@@ -5,11 +5,14 @@ function Square({ value, onSquareClick }) {
 }
 
 export default function Board() {
+  const [xsTurn, setXsTurn] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleClick(index) {
+    if (squares[index]) { return; }
     const newSquares = squares.slice();
-    newSquares[index] = "X";
+    xsTurn ? newSquares[index] = "X" : newSquares[index] = "O";
+    setXsTurn(!xsTurn);
     setSquares(newSquares);
   }
 
