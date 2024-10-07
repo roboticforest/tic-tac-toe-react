@@ -9,15 +9,25 @@ export default function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleClick(index) {
-    if (squares[index]) { return; }
+    if (checkForWinner(squares) || squares[index]) { return; }
     const newSquares = squares.slice();
     xsTurn ? newSquares[index] = "X" : newSquares[index] = "O";
     setXsTurn(!xsTurn);
     setSquares(newSquares);
   }
 
+  const winner = checkForWinner(squares);
+  let statusMsg = "";
+  if (winner) {
+    statusMsg = "The winner is " + winner + "!";
+  }
+  else {
+    statusMsg = "Next Player: " + (xsTurn ? "X" : "O");
+  }
+
   return (
     <>
+      <div className="status">{statusMsg}</div>
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -35,4 +45,24 @@ export default function Board() {
       </div>
     </>
   );
+}
+
+function checkForWinner(squares) {
+  const winningLines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8]
+  ];
+  for (let line of winningLines) {
+    let [a, b, c] = line;
+    if (squares[a] === squares[b] && squares[b] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 }
